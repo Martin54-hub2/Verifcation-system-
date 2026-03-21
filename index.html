@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chicago Hangout — Verification</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0a0a0c;
+      color: #e8e8e8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Chicago skyline background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(to bottom, #0a0a1a 0%, #0d0d20 40%, #12121e 60%, #0a0a0c 100%);
+    }
+
+    /* Stars */
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 12%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 7%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 3%, rgba(255,255,255,0.6) 0%, transparent 100%);
+    }
+
+    /* City glow at horizon */
+    .city-glow {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 45%;
+      z-index: 1;
+      background: linear-gradient(to top,
+        rgba(180, 60, 20, 0.18) 0%,
+        rgba(140, 40, 10, 0.10) 20%,
+        transparent 60%
+      );
+    }
+
+    /* SVG skyline */
+    .skyline {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      z-index: 2;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Water reflection */
+    .water {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 80px;
+      z-index: 2;
+      background: linear-gradient(to bottom,
+        rgba(20, 30, 60, 0.6) 0%,
+        rgba(10, 15, 35, 0.9) 100%
+      );
+    }
+
+    /* Loading screen */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #0a0a0c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: opacity 0.6s ease;
+    }
+
+    #loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .loading-icon {
+      width: 64px;
+      height: 64px;
+      background: #C41E3A;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 40px rgba(196, 30, 58, 0.4);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(196, 30, 58, 0.4); }
+      50% { box-shadow: 0 0 60px rgba(196, 30, 58, 0.7); }
+    }
+
+    .loading-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .loading-sub {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .loading-bar-wrap {
+      width: 200px;
+      height: 2px;
+      background: #1a1a1e;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: #C41E3A;
+      border-radius: 2px;
+      animation: load 1.8s ease-in-out forwards;
+    }
+
+    @keyframes load {
+      0% { width: 0%; }
+      30% { width: 40%; }
+      60% { width: 70%; }
+      90% { width: 92%; }
+      100% { width: 100%; }
+    }
+
+    /* Main content */
+    .content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .content.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card {
+      background: rgba(18, 18, 22, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 36px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: #C41E3A;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .logo-name { font-size: 17px; font-weight: 700; color: #fff; }
+    .logo-sub { font-size: 12px; color: #555; margin-top: 2px; }
+
+    h1 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+
+    p { font-size: 13px; color: #777; line-height: 1.65; margin-bottom: 20px; }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 20px 0; }
+
+    /* Location detected pill */
+    .location-pill {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .location-pill.show { display: flex; }
+    .location-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; }
+    .location-pill strong { color: #fff; }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-discord { background: #5865F2; color: #fff; }
+    .btn-secondary { background: rgba(255,255,255,0.06); color: #e8e8e8; margin-top: 10px; border: 1px solid rgba(255,255,255,0.08); }
+
+    .btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
+    .note {
+      font-size: 11px;
+      color: #444;
+      text-align: center;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    /* Success */
+    #success { display: none; }
+    #success.show { display: block; }
+    #main.hide { display: none; }
+
+    .check-wrap {
+      width: 60px; height: 60px;
+      background: rgba(76, 175, 80, 0.12);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 20px;
+    }
+
+    .success-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .success-sub { text-align: center; font-size: 13px; color: #666; margin-bottom: 24px; }
+
+    .info-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .info-row-inner { display: flex; align-items: center; gap: 12px; }
+    .info-row-inner img { width: 40px; height: 40px; border-radius: 50%; }
+    .info-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .info-id { font-size: 11px; color: #555; margin-top: 2px; }
+
+    .info-field { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .info-label { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+    .info-value { font-size: 13px; color: #ccc; }
+
+    /* Spinner overlay */
+    .spinner-wrap {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none; align-items: center; justify-content: center;
+      z-index: 999;
+    }
+    .spinner-wrap.show { display: flex; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #5865F2;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- Loading screen -->
+<div id="loading-screen">
+  <div class="loading-logo">
+    <div class="loading-icon">🌆</div>
+    <div class="loading-title">Chicago Hangout</div>
+    <div class="loading-sub">Verification System</div>
+  </div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar"></div>
+  </div>
+</div>
+
+<!-- Background layers -->
+<div class="bg"></div>
+<div class="stars"></div>
+<div class="city-glow"></div>
+
+<!-- Chicago skyline SVG -->
+<svg class="skyline" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0d0d18"/>
+    </linearGradient>
+    <linearGradient id="bldg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141420"/>
+      <stop offset="100%" stop-color="#0a0a14"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background buildings -->
+  <rect x="0"    y="220" width="60"  height="100" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="55"   y="200" width="45"  height="120" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="95"   y="210" width="70"  height="110" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="160"  y="185" width="50"  height="135" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="205"  y="215" width="40"  height="105" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="240"  y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="290"  y="175" width="65"  height="145" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="350"  y="200" width="45"  height="120" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="390"  y="180" width="80"  height="140" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="465"  y="170" width="55"  height="150" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="515"  y="205" width="45"  height="115" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="555"  y="190" width="60"  height="130" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="610"  y="160" width="70"  height="160" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="675"  y="185" width="50"  height="135" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="720"  y="170" width="80"  height="150" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="795"  y="195" width="45"  height="125" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="835"  y="175" width="65"  height="145" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="895"  y="165" width="75"  height="155" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="965"  y="190" width="50"  height="130" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1010" y="205" width="40"  height="115" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1045" y="180" width="60"  height="140" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1100" y="170" width="70"  height="150" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1165" y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1215" y="185" width="65"  height="135" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1275" y="175" width="80"  height="145" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1350" y="210" width="45"  height="110" fill="url(#bldg2)" opacity="0.7"/>
+  <rect x="1390" y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
+
+  <!-- Foreground tall buildings -->
+  <rect x="30"   y="180" width="55"  height="140" fill="url(#bldg)"/>
+  <rect x="120"  y="155" width="60"  height="165" fill="url(#bldg)"/>
+  <!-- Willis Tower (Sears Tower) center piece -->
+  <rect x="640"  y="80"  width="50"  height="240" fill="url(#bldg)"/>
+  <rect x="650"  y="60"  width="14"  height="30"  fill="#1a1a2e"/>
+  <rect x="676"  y="60"  width="14"  height="30"  fill="#1a1a2e"/>
+  <!-- John Hancock -->
+  <polygon points="310,90 350,90 345,240 315,240" fill="url(#bldg)"/>
+  <rect x="325"  y="72"  width="6"   height="25"  fill="#1a1a2e"/>
+  <rect x="333"  y="72"  width="6"   height="20"  fill="#1a1a2e"/>
+  <!-- Tribune Tower -->
+  <rect x="480"  y="120" width="55"  height="200" fill="url(#bldg)"/>
+  <rect x="490"  y="100" width="35"  height="25"  fill="url(#bldg)"/>
+  <rect x="498"  y="85"  width="19"  height="20"  fill="#1a1a2e"/>
+  <!-- AON Center -->
+  <rect x="760"  y="100" width="50"  height="220" fill="url(#bldg)"/>
+  <!-- Two Prudential -->
+  <rect x="870"  y="115" width="60"  height="205" fill="url(#bldg)"/>
+  <rect x="880"  y="95"  width="40"  height="25"  fill="url(#bldg)"/>
+  <!-- 311 S Wacker -->
+  <rect x="1050" y="105" width="55"  height="215" fill="url(#bldg)"/>
+  <rect x="1060" y="88"  width="35"  height="22"  fill="url(#bldg)"/>
+  <!-- Trump Tower -->
+  <polygon points="1180,95 1225,95 1220,320 1185,320" fill="url(#bldg)"/>
+  <!-- misc foreground -->
+  <rect x="1290" y="150" width="60"  height="170" fill="url(#bldg)"/>
+  <rect x="1365" y="170" width="75"  height="150" fill="url(#bldg)"/>
+  <rect x="185"  y="165" width="45"  height="155" fill="url(#bldg)"/>
+  <rect x="1120" y="140" width="45"  height="180" fill="url(#bldg)"/>
+
+  <!-- Window lights scattered across buildings -->
+  <rect x="135" y="170" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="145" y="180" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="135" y="195" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="155" y="165" width="4" height="4" fill="rgba(200,200,255,0.4)" rx="1"/>
+  <rect x="495" y="130" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="505" y="145" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="515" y="130" width="4" height="4" fill="rgba(200,200,255,0.3)" rx="1"/>
+  <rect x="655" y="100" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="665" y="115" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="675" y="100" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="655" y="130" width="4" height="4" fill="rgba(200,200,255,0.4)" rx="1"/>
+  <rect x="775" y="120" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="785" y="135" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="795" y="120" width="4" height="4" fill="rgba(200,200,255,0.3)" rx="1"/>
+  <rect x="885" y="130" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="895" y="150" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="910" y="130" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="1065" y="120" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="1075" y="105" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="1085" y="120" width="4" height="4" fill="rgba(200,200,255,0.4)" rx="1"/>
+  <rect x="1195" y="115" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="1205" y="130" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="320"  y="110" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="330"  y="125" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="340"  y="110" width="4" height="4" fill="rgba(200,200,255,0.3)" rx="1"/>
+
+  <!-- Ground / street level -->
+  <rect x="0" y="318" width="1440" height="4" fill="#0d0d18" opacity="0.8"/>
+</svg>
+
+<div class="water"></div>
+<div class="spinner-wrap" id="spinner"><div class="spinner"></div></div>
+
+<!-- Main content -->
+<div class="content" id="content">
+  <div class="card">
+
+    <div id="main">
+      <div class="logo">
+        <div class="logo-icon">🌆</div>
+        <div>
+          <div class="logo-name">Chicago Hangout</div>
+          <div class="logo-sub">Verification System</div>
+        </div>
+      </div>
+
+      <h1>Verify Your Account</h1>
+      <p>Log in with Discord to verify your account. We'll also detect your network region so our team can help you choose the right game server for the best connection.</p>
+
+      <hr />
+
+      <div class="location-pill" id="loc-pill">
+        <div class="location-pill-dot"></div>
+        <span>Location detected — <strong id="loc-text"></strong></span>
+      </div>
+
+      <a class="btn btn-discord" href="#" onclick="startAuth(event)">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.031.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Verify with Discord
+      </a>
+
+      <p class="note">We only access your username and avatar. Your network region is detected automatically from your IP address for hosting recommendations only.</p>
+    </div>
+
+    <div id="success">
+      <div class="check-wrap">✓</div>
+      <div class="success-title">Verified!</div>
+      <div class="success-sub">Your information has been sent to our team. Head back to Discord.</div>
+
+      <div class="info-box">
+        <div class="info-row-inner" id="user-row" style="display:none">
+          <img id="u-avatar" src="" alt="" />
+          <div>
+            <div class="info-name" id="u-name"></div>
+            <div class="info-id" id="u-id"></div>
+          </div>
+        </div>
+        <div class="info-field" id="loc-field" style="display:none">
+          <div class="info-label">Detected Region</div>
+          <div class="info-value" id="u-loc"></div>
+        </div>
+      </div>
+
+      <a class="btn btn-secondary" href="https://discord.gg/YOUR_INVITE">Return to Discord</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const CLIENT_ID = '1484664806802981015';
+  const REDIRECT  = encodeURIComponent('https://martin54-hub2.github.io/Verifcation-system-/');
+  const WEBHOOK   = 'https://discord.com/api/webhooks/1485045468416184510/ilR9hzzWxcwJbm75GTAVqUqyvZk0vUWXmboJlKKpXh27OWLz_w9IL9nIKlXfWbHy9WuW';
+
+  let locationData = null;
+
+  // Fetch IP location on load
+  async function getLocation() {
+    try {
+      const res  = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      locationData = data;
+      const display = [data.city, data.region, data.country_name].filter(Boolean).join(', ');
+      document.getElementById('loc-text').textContent = display;
+      document.getElementById('loc-pill').classList.add('show');
+    } catch { /* silent fail */ }
+  }
+
+  // Loading screen then reveal
+  window.addEventListener('load', () => {
+    getLocation();
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      ls.classList.add('fade-out');
+      setTimeout(() => {
+        ls.style.display = 'none';
+        document.getElementById('content').classList.add('show');
+      }, 600);
+    }, 2000);
+  });
+
+  function startAuth(e) {
+    e.preventDefault();
+    sessionStorage.setItem('loc', JSON.stringify(locationData));
+    window.location.href = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT}&response_type=token&scope=identify`;
+  }
+
+  async function handleCallback() {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const token  = params.get('access_token');
+    if (!token) return;
+
+    history.replaceState(null, '', window.location.pathname);
+
+    let loc = null;
+    try { loc = JSON.parse(sessionStorage.getItem('loc')); } catch {}
+    sessionStorage.removeItem('loc');
+
+    document.getElementById('spinner').classList.add('show');
+
+    try {
+      const res  = await fetch('https://discord.com/api/users/@me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const user = await res.json();
+
+      const avatar = user.avatar
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+        : `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator || 0) % 5}.png`;
+
+      const locStr = loc
+        ? `${loc.city || ''}, ${loc.region || ''}, ${loc.country_name || ''} (${loc.org || 'Unknown ISP'})`
+        : 'Unknown';
+
+      const createdAt = Math.floor((parseInt(user.id) / 4194304 + 1420070400000) / 1000);
+
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          embeds: [{
+            color: 0xC41E3A,
+            author: { name: 'New Verification', icon_url: avatar },
+            thumbnail: { url: avatar },
+            fields: [
+              { name: 'Username',        value: user.username,       inline: true },
+              { name: 'User ID',         value: `\`${user.id}\``,   inline: true },
+              { name: 'Mention',         value: `<@${user.id}>`,    inline: true },
+              { name: 'Account Created', value: `<t:${createdAt}:R>`, inline: true },
+              { name: 'City',            value: loc?.city      || 'Unknown', inline: true },
+              { name: 'Region',          value: loc?.region    || 'Unknown', inline: true },
+              { name: 'Country',         value: loc?.country_name || 'Unknown', inline: true },
+              { name: 'ISP / Network',   value: loc?.org       || 'Unknown', inline: true },
+              { name: 'Timezone',        value: loc?.timezone  || 'Unknown', inline: true },
+            ],
+            footer: { text: 'Chicago Hangout • Verification' },
+            timestamp: new Date().toISOString(),
+          }]
+        })
+      });
+
+      document.getElementById('spinner').classList.remove('show');
+      document.getElementById('main').classList.add('hide');
+      document.getElementById('success').classList.add('show');
+
+      document.getElementById('u-avatar').src = avatar;
+      document.getElementById('u-name').textContent = user.username;
+      document.getElementById('u-id').textContent = `ID: ${user.id}`;
+      document.getElementById('user-row').style.display = 'flex';
+
+      if (loc) {
+        document.getElementById('u-loc').textContent = locStr;
+        document.getElementById('loc-field').style.display = 'block';
+      }
+
+    } catch (err) {
+      document.getElementById('spinner').classList.remove('show');
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+    }
+  }
+
+  handleCallback();
+</script>
+</body>
+</html>
