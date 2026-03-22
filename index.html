@@ -4,12 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chicago Hangout — Verification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0a0a0c;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #060608;
       color: #e8e8e8;
       min-height: 100vh;
       display: flex;
@@ -20,48 +22,52 @@
       position: relative;
     }
 
-    /* Chicago skyline background */
     .bg {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background:
-        linear-gradient(to bottom, #0a0a1a 0%, #0d0d20 40%, #12121e 60%, #0a0a0c 100%);
+      background: linear-gradient(to bottom, #06060f 0%, #0a0a1a 40%, #0d0d18 60%, #060608 100%);
     }
 
-    /* Stars */
     .stars {
       position: fixed;
       inset: 0;
       z-index: 1;
       background-image:
-        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
-        radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 40% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
-        radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 12%, rgba(255,255,255,0.6) 0%, transparent 100%),
-        radial-gradient(1px 1px at 85% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 92% 7%, rgba(255,255,255,0.5) 0%, transparent 100%),
-        radial-gradient(1px 1px at 5% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 78% 3%, rgba(255,255,255,0.6) 0%, transparent 100%);
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 12%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 18%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 7%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 3%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 33% 35%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 28%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 22%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 10%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
     }
 
-    /* City glow at horizon */
     .city-glow {
       position: fixed;
       bottom: 0;
       left: 0; right: 0;
-      height: 45%;
+      height: 50%;
       z-index: 1;
       background: linear-gradient(to top,
-        rgba(180, 60, 20, 0.18) 0%,
-        rgba(140, 40, 10, 0.10) 20%,
+        rgba(196, 30, 58, 0.15) 0%,
+        rgba(160, 20, 40, 0.08) 25%,
         transparent 60%
       );
     }
 
-    /* SVG skyline */
     .skyline {
       position: fixed;
       bottom: 0;
@@ -71,120 +77,200 @@
       height: auto;
     }
 
-    /* Water reflection */
+    /* Animated cars on street */
+    .street {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 20px;
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    .car {
+      position: absolute;
+      bottom: 2px;
+      height: 7px;
+      border-radius: 3px 3px 1px 1px;
+      animation: drive linear infinite;
+    }
+    .car::before {
+      content: '';
+      position: absolute;
+      right: -5px;
+      bottom: 0;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 200, 80, 0.9);
+      box-shadow: 0 0 4px rgba(255,200,80,0.8);
+    }
+    .car::after {
+      content: '';
+      position: absolute;
+      left: -4px;
+      bottom: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,80,80,0.8);
+      box-shadow: 0 0 3px rgba(255,80,80,0.6);
+    }
+    .car-1 { width: 22px; background: rgba(180,180,200,0.5); animation-duration: 8s; animation-delay: 0s; bottom: 3px; }
+    .car-2 { width: 26px; background: rgba(150,160,180,0.4); animation-duration: 12s; animation-delay: -3s; bottom: 5px; }
+    .car-3 { width: 18px; background: rgba(200,190,170,0.45); animation-duration: 10s; animation-delay: -6s; bottom: 2px; }
+    .car-4 { width: 30px; background: rgba(120,130,150,0.4); animation-duration: 15s; animation-delay: -9s; bottom: 4px; }
+    .car-5 { width: 20px; background: rgba(160,170,190,0.5); animation-duration: 9s; animation-delay: -2s; bottom: 3px; }
+
+    .car-r { animation-name: drive-r; }
+    @keyframes drive {
+      from { left: -60px; }
+      to { left: 110%; }
+    }
+    @keyframes drive-r {
+      from { right: -60px; left: auto; transform: scaleX(-1); }
+      to { right: 110%; left: auto; transform: scaleX(-1); }
+    }
+
     .water {
       position: fixed;
       bottom: 0;
       left: 0; right: 0;
-      height: 80px;
+      height: 18px;
       z-index: 2;
       background: linear-gradient(to bottom,
-        rgba(20, 30, 60, 0.6) 0%,
-        rgba(10, 15, 35, 0.9) 100%
+        rgba(20, 30, 60, 0.5) 0%,
+        rgba(8, 12, 28, 0.95) 100%
       );
     }
 
-    /* Loading screen */
+    /* ─── LOADING SCREEN ─── */
     #loading-screen {
       position: fixed;
       inset: 0;
       z-index: 1000;
-      background: #0a0a0c;
+      background: #060608;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
-      transition: opacity 0.6s ease;
+      gap: 28px;
+      transition: opacity 0.7s ease;
     }
-
-    #loading-screen.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
+    #loading-screen.fade-out { opacity: 0; pointer-events: none; }
 
     .loading-logo {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
 
     .loading-icon {
-      width: 64px;
-      height: 64px;
-      background: #C41E3A;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      box-shadow: 0 0 40px rgba(196, 30, 58, 0.4);
-      animation: pulse 2s ease-in-out infinite;
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(196,30,58,0.3), 0 0 40px rgba(196,30,58,0.3);
+      animation: loading-pulse 2s ease-in-out infinite;
+    }
+    .loading-icon img { width: 100%; height: 100%; object-fit: cover; }
+    @keyframes loading-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(196,30,58,0.3), 0 0 40px rgba(196,30,58,0.3); }
+      50% { box-shadow: 0 0 0 1px rgba(196,30,58,0.6), 0 0 60px rgba(196,30,58,0.6); }
     }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(196, 30, 58, 0.4); }
-      50% { box-shadow: 0 0 60px rgba(196, 30, 58, 0.7); }
-    }
-
-    .loading-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.02em;
-    }
-
-    .loading-sub {
-      font-size: 13px;
-      color: #555;
-    }
+    .loading-title { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: 0.02em; }
+    .loading-sub { font-size: 13px; color: #444; }
 
     .loading-bar-wrap {
-      width: 200px;
+      width: 220px;
       height: 2px;
-      background: #1a1a1e;
+      background: #111116;
       border-radius: 2px;
       overflow: hidden;
     }
-
     .loading-bar {
       height: 100%;
-      background: #C41E3A;
+      background: linear-gradient(90deg, #C41E3A, #e8294e);
       border-radius: 2px;
-      animation: load 1.8s ease-in-out forwards;
+      animation: load 2s ease-in-out forwards;
     }
-
     @keyframes load {
       0% { width: 0%; }
       30% { width: 40%; }
-      60% { width: 70%; }
-      90% { width: 92%; }
+      65% { width: 72%; }
+      90% { width: 94%; }
       100% { width: 100%; }
     }
 
-    /* Main content */
+    /* Mute button on loading screen */
+    .mute-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #888;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .mute-btn:hover { background: rgba(255,255,255,0.12); color: #ccc; }
+    .mute-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ─── CARD 3D TILT ─── */
     .content {
       position: relative;
       z-index: 10;
       width: 100%;
       max-width: 440px;
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      perspective: 1000px;
     }
-
-    .content.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .content.show { opacity: 1; transform: translateY(0); }
 
     .card {
-      background: rgba(18, 18, 22, 0.92);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 16px;
+      background: rgba(14, 14, 20, 0.94);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
       padding: 36px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      will-change: transform;
+      box-shadow: 0 0 0 1px rgba(196,30,58,0.08), 0 24px 60px rgba(0,0,0,0.6);
+    }
+
+    /* Animated border shimmer */
+    .card-wrap {
+      position: relative;
+      border-radius: 20px;
+    }
+    .card-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 21px;
+      background: linear-gradient(135deg, rgba(196,30,58,0.4), transparent 40%, transparent 60%, rgba(196,30,58,0.2));
+      z-index: -1;
+      animation: border-rotate 4s linear infinite;
+    }
+    @keyframes border-rotate {
+      0% { background: linear-gradient(0deg, rgba(196,30,58,0.4), transparent 40%, transparent 70%, rgba(196,30,58,0.15)); }
+      25% { background: linear-gradient(90deg, rgba(196,30,58,0.4), transparent 40%, transparent 70%, rgba(196,30,58,0.15)); }
+      50% { background: linear-gradient(180deg, rgba(196,30,58,0.4), transparent 40%, transparent 70%, rgba(196,30,58,0.15)); }
+      75% { background: linear-gradient(270deg, rgba(196,30,58,0.4), transparent 40%, transparent 70%, rgba(196,30,58,0.15)); }
+      100% { background: linear-gradient(360deg, rgba(196,30,58,0.4), transparent 40%, transparent 70%, rgba(196,30,58,0.15)); }
     }
 
     .logo {
@@ -193,32 +279,61 @@
       gap: 12px;
       margin-bottom: 28px;
     }
-
     .logo-icon {
       width: 44px;
       height: 44px;
-      background: #C41E3A;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
+      overflow: hidden;
       flex-shrink: 0;
+      border: 1px solid rgba(196,30,58,0.3);
     }
-
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
     .logo-name { font-size: 17px; font-weight: 700; color: #fff; }
-    .logo-sub { font-size: 12px; color: #555; margin-top: 2px; }
+    .logo-sub { font-size: 11px; color: #444; margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
 
     h1 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    p { font-size: 13px; color: #666; line-height: 1.65; margin-bottom: 20px; }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 20px 0; }
 
-    p { font-size: 13px; color: #777; line-height: 1.65; margin-bottom: 20px; }
+    /* Checklist */
+    .checklist { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #888;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .check-item input { display: none; }
+    .check-box {
+      width: 18px; height: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .check-item input:checked + .check-box {
+      background: #C41E3A;
+      border-color: #C41E3A;
+    }
+    .check-item input:checked + .check-box::after {
+      content: '';
+      display: block;
+      width: 4px; height: 7px;
+      border: 2px solid #fff;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+    .check-item.checked { color: #ccc; }
 
-    hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 20px 0; }
-
-.btn {
+    .btn {
       width: 100%;
-      padding: 13px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
       border: none;
       font-size: 15px;
       font-weight: 600;
@@ -227,84 +342,136 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      transition: opacity 0.15s, transform 0.1s;
+      transition: all 0.2s;
       text-decoration: none;
+      letter-spacing: 0.01em;
+      font-family: 'Inter', sans-serif;
     }
-
-    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn-discord { background: #5865F2; color: #fff; }
-    .btn-secondary { background: rgba(255,255,255,0.06); color: #e8e8e8; margin-top: 10px; border: 1px solid rgba(255,255,255,0.08); }
-
-    .btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
-
-    .note {
-      font-size: 11px;
-      color: #444;
-      text-align: center;
-      margin-top: 14px;
-      line-height: 1.5;
+    .btn-discord {
+      background: #5865F2;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(88,101,242,0.3);
+      opacity: 0.4;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.15s, box-shadow 0.15s;
     }
+    .btn-discord.ready {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .btn-discord.ready:hover {
+      background: #4752c4;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(88,101,242,0.4);
+    }
+    .btn-discord.ready:active { transform: translateY(0); }
+    .btn-discord svg { width: 20px; height: 20px; fill: #fff; flex-shrink: 0; }
 
-    /* Success */
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #ccc;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.09); }
+
+    .note { font-size: 11px; color: #333; text-align: center; margin-top: 14px; line-height: 1.5; }
+
+    /* ─── SUCCESS ─── */
     #success { display: none; }
     #success.show { display: block; }
     #main.hide { display: none; }
 
-    .check-wrap {
-      width: 60px; height: 60px;
-      background: rgba(76, 175, 80, 0.12);
-      border: 1px solid rgba(76, 175, 80, 0.3);
+    .success-avatar-wrap {
+      width: 80px; height: 80px;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
+      position: relative;
+      overflow: hidden;
+      border: 3px solid #C41E3A;
+      box-shadow: 0 0 24px rgba(196,30,58,0.4);
     }
+    .success-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .success-badge {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 22px; height: 22px;
+      background: #4CAF50;
+      border-radius: 50%;
+      border: 2px solid #0e0e14;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .success-badge svg { width: 10px; height: 10px; fill: #fff; }
 
-    .success-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .success-sub { text-align: center; font-size: 13px; color: #666; margin-bottom: 24px; }
+    .success-title { text-align: center; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .success-name { text-align: center; font-size: 14px; color: #888; margin-bottom: 20px; }
 
     .info-box {
       background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
       padding: 14px 16px;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
     }
-
     .info-row-inner { display: flex; align-items: center; gap: 12px; }
     .info-row-inner img { width: 40px; height: 40px; border-radius: 50%; }
     .info-name { font-size: 14px; font-weight: 600; color: #fff; }
-    .info-id { font-size: 11px; color: #555; margin-top: 2px; }
+    .info-id { font-size: 11px; color: #444; margin-top: 2px; }
+    .info-field { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .info-label { font-size: 10px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+    .info-value { font-size: 13px; color: #aaa; }
 
-    .info-field { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
-    .info-label { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-    .info-value { font-size: 13px; color: #ccc; }
-
-    /* Spinner overlay */
+    /* Spinner */
     .spinner-wrap {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       display: none; align-items: center; justify-content: center;
       z-index: 999;
     }
     .spinner-wrap.show { display: flex; }
     .spinner {
       width: 36px; height: 36px;
-      border: 3px solid rgba(255,255,255,0.1);
+      border: 3px solid rgba(255,255,255,0.08);
       border-top-color: #5865F2;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Progress bar at top */
+    .page-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #C41E3A, #e8294e);
+      z-index: 100;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
   </style>
 </head>
 <body>
 
+<!-- Ambient intro music -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="https://cdn.pixabay.com/audio/2023/06/05/audio_0b8e8a8d08.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Mute button -->
+<button class="mute-btn" id="muteBtn" onclick="toggleMute()">
+  <svg id="muteIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+  <span id="muteLabel">Mute</span>
+</button>
+
+<!-- Page progress -->
+<div class="page-progress" id="pageProgress"></div>
+
 <!-- Loading screen -->
 <div id="loading-screen">
   <div class="loading-logo">
-    <div class="loading-icon">🌆</div>
+    <div class="loading-icon">
+      <img src="logo.gif" id="loadingGif" alt="Chicago Hangout" onerror="this.style.background='#C41E3A'">
+    </div>
     <div class="loading-title">Chicago Hangout</div>
     <div class="loading-sub">Verification System</div>
   </div>
@@ -313,85 +480,92 @@
   </div>
 </div>
 
-<!-- Background layers -->
+<!-- Background -->
 <div class="bg"></div>
 <div class="stars"></div>
 <div class="city-glow"></div>
 
-<!-- Chicago skyline SVG -->
+<!-- Chicago skyline -->
 <svg class="skyline" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a1a2e"/>
-      <stop offset="100%" stop-color="#0d0d18"/>
-    </linearGradient>
-    <linearGradient id="bldg2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#141420"/>
+      <stop offset="0%" stop-color="#161622"/>
       <stop offset="100%" stop-color="#0a0a14"/>
     </linearGradient>
+    <linearGradient id="bldg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111118"/>
+      <stop offset="100%" stop-color="#080810"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
-
   <!-- Background buildings -->
-  <rect x="0"    y="220" width="60"  height="100" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="55"   y="200" width="45"  height="120" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="95"   y="210" width="70"  height="110" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="160"  y="185" width="50"  height="135" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="205"  y="215" width="40"  height="105" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="240"  y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="290"  y="175" width="65"  height="145" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="350"  y="200" width="45"  height="120" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="390"  y="180" width="80"  height="140" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="465"  y="170" width="55"  height="150" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="515"  y="205" width="45"  height="115" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="555"  y="190" width="60"  height="130" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="610"  y="160" width="70"  height="160" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="675"  y="185" width="50"  height="135" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="720"  y="170" width="80"  height="150" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="795"  y="195" width="45"  height="125" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="835"  y="175" width="65"  height="145" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="895"  y="165" width="75"  height="155" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="965"  y="190" width="50"  height="130" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1010" y="205" width="40"  height="115" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1045" y="180" width="60"  height="140" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1100" y="170" width="70"  height="150" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1165" y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1215" y="185" width="65"  height="135" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1275" y="175" width="80"  height="145" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1350" y="210" width="45"  height="110" fill="url(#bldg2)" opacity="0.7"/>
-  <rect x="1390" y="195" width="55"  height="125" fill="url(#bldg2)" opacity="0.7"/>
-
-  <!-- Foreground tall buildings -->
-  <rect x="30"   y="180" width="55"  height="140" fill="url(#bldg)"/>
-  <rect x="120"  y="155" width="60"  height="165" fill="url(#bldg)"/>
-  <!-- Willis Tower (Sears Tower) center piece -->
-  <rect x="640"  y="80"  width="50"  height="240" fill="url(#bldg)"/>
-  <rect x="650"  y="60"  width="14"  height="30"  fill="#1a1a2e"/>
-  <rect x="676"  y="60"  width="14"  height="30"  fill="#1a1a2e"/>
+  <rect x="0" y="220" width="60" height="100" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="55" y="200" width="45" height="120" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="95" y="210" width="70" height="110" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="160" y="185" width="50" height="135" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="205" y="215" width="40" height="105" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="240" y="195" width="55" height="125" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="290" y="175" width="65" height="145" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="350" y="200" width="45" height="120" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="390" y="180" width="80" height="140" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="465" y="170" width="55" height="150" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="515" y="205" width="45" height="115" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="555" y="190" width="60" height="130" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="610" y="160" width="70" height="160" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="675" y="185" width="50" height="135" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="720" y="170" width="80" height="150" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="795" y="195" width="45" height="125" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="835" y="175" width="65" height="145" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="895" y="165" width="75" height="155" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="965" y="190" width="50" height="130" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1010" y="205" width="40" height="115" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1045" y="180" width="60" height="140" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1100" y="170" width="70" height="150" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1165" y="195" width="55" height="125" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1215" y="185" width="65" height="135" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1275" y="175" width="80" height="145" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1350" y="210" width="45" height="110" fill="url(#bldg2)" opacity="0.6"/>
+  <rect x="1390" y="195" width="55" height="125" fill="url(#bldg2)" opacity="0.6"/>
+  <!-- Foreground -->
+  <rect x="30" y="180" width="55" height="140" fill="url(#bldg)"/>
+  <rect x="120" y="155" width="60" height="165" fill="url(#bldg)"/>
+  <!-- Willis Tower -->
+  <rect x="640" y="80" width="50" height="240" fill="url(#bldg)"/>
+  <rect x="650" y="60" width="14" height="30" fill="#161622"/>
+  <rect x="676" y="60" width="14" height="30" fill="#161622"/>
+  <!-- Red antenna light on Willis -->
+  <circle cx="657" cy="56" r="2" fill="#C41E3A" opacity="0.9" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="683" cy="56" r="2" fill="#C41E3A" opacity="0.9" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
   <!-- John Hancock -->
   <polygon points="310,90 350,90 345,240 315,240" fill="url(#bldg)"/>
-  <rect x="325"  y="72"  width="6"   height="25"  fill="#1a1a2e"/>
-  <rect x="333"  y="72"  width="6"   height="20"  fill="#1a1a2e"/>
+  <rect x="325" y="72" width="6" height="28" fill="#161622"/>
+  <rect x="333" y="72" width="6" height="22" fill="#161622"/>
   <!-- Tribune Tower -->
-  <rect x="480"  y="120" width="55"  height="200" fill="url(#bldg)"/>
-  <rect x="490"  y="100" width="35"  height="25"  fill="url(#bldg)"/>
-  <rect x="498"  y="85"  width="19"  height="20"  fill="#1a1a2e"/>
+  <rect x="480" y="120" width="55" height="200" fill="url(#bldg)"/>
+  <rect x="490" y="100" width="35" height="25" fill="url(#bldg)"/>
+  <rect x="498" y="85" width="19" height="20" fill="#161622"/>
   <!-- AON Center -->
-  <rect x="760"  y="100" width="50"  height="220" fill="url(#bldg)"/>
+  <rect x="760" y="100" width="50" height="220" fill="url(#bldg)"/>
   <!-- Two Prudential -->
-  <rect x="870"  y="115" width="60"  height="205" fill="url(#bldg)"/>
-  <rect x="880"  y="95"  width="40"  height="25"  fill="url(#bldg)"/>
+  <rect x="870" y="115" width="60" height="205" fill="url(#bldg)"/>
+  <rect x="880" y="95" width="40" height="25" fill="url(#bldg)"/>
   <!-- 311 S Wacker -->
-  <rect x="1050" y="105" width="55"  height="215" fill="url(#bldg)"/>
-  <rect x="1060" y="88"  width="35"  height="22"  fill="url(#bldg)"/>
+  <rect x="1050" y="105" width="55" height="215" fill="url(#bldg)"/>
+  <rect x="1060" y="88" width="35" height="22" fill="url(#bldg)"/>
   <!-- Trump Tower -->
   <polygon points="1180,95 1225,95 1220,320 1185,320" fill="url(#bldg)"/>
-  <!-- misc foreground -->
-  <rect x="1290" y="150" width="60"  height="170" fill="url(#bldg)"/>
-  <rect x="1365" y="170" width="75"  height="150" fill="url(#bldg)"/>
-  <rect x="185"  y="165" width="45"  height="155" fill="url(#bldg)"/>
-  <rect x="1120" y="140" width="45"  height="180" fill="url(#bldg)"/>
-
-  <!-- Window lights scattered across buildings -->
+  <rect x="1290" y="150" width="60" height="170" fill="url(#bldg)"/>
+  <rect x="1365" y="170" width="75" height="150" fill="url(#bldg)"/>
+  <rect x="185" y="165" width="45" height="155" fill="url(#bldg)"/>
+  <rect x="1120" y="140" width="45" height="180" fill="url(#bldg)"/>
+  <!-- Window lights -->
   <rect x="135" y="170" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
   <rect x="145" y="180" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
   <rect x="135" y="195" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
@@ -414,65 +588,106 @@
   <rect x="1085" y="120" width="4" height="4" fill="rgba(200,200,255,0.4)" rx="1"/>
   <rect x="1195" y="115" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
   <rect x="1205" y="130" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
-  <rect x="320"  y="110" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
-  <rect x="330"  y="125" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
-  <rect x="340"  y="110" width="4" height="4" fill="rgba(200,200,255,0.3)" rx="1"/>
-
-  <!-- Ground / street level -->
-  <rect x="0" y="318" width="1440" height="4" fill="#0d0d18" opacity="0.8"/>
+  <rect x="320" y="110" width="4" height="4" fill="rgba(255,220,100,0.4)" rx="1"/>
+  <rect x="330" y="125" width="4" height="4" fill="rgba(255,220,100,0.5)" rx="1"/>
+  <rect x="340" y="110" width="4" height="4" fill="rgba(200,200,255,0.3)" rx="1"/>
+  <!-- Street -->
+  <rect x="0" y="316" width="1440" height="6" fill="#0a0a12"/>
+  <!-- Street line -->
+  <rect x="0" y="318" width="1440" height="1" fill="rgba(255,220,100,0.15)"/>
 </svg>
 
 <div class="water"></div>
+
+<!-- Animated cars -->
+<div class="street">
+  <div class="car car-1" style="animation-name:drive"></div>
+  <div class="car car-2" style="animation-name:drive-r; right:-60px; left:auto; transform:scaleX(-1)"></div>
+  <div class="car car-3" style="animation-name:drive"></div>
+  <div class="car car-4" style="animation-name:drive-r; right:-60px; left:auto; transform:scaleX(-1)"></div>
+  <div class="car car-5" style="animation-name:drive"></div>
+</div>
+
 <div class="spinner-wrap" id="spinner"><div class="spinner"></div></div>
 
 <!-- Main content -->
 <div class="content" id="content">
-  <div class="card">
+  <div class="card-wrap">
+    <div class="card" id="tiltCard">
 
-    <div id="main">
-      <div class="logo">
-        <div class="logo-icon">🌆</div>
-        <div>
-          <div class="logo-name">Chicago Hangout</div>
-          <div class="logo-sub">Verification System</div>
-        </div>
-      </div>
-
-      <h1>Verify Your Account</h1>
-      <p>Log in with Discord to verify your account. We'll also detect your network region so our team can help you choose the right game server for the best connection.</p>
-
-      <hr />
-
-<a class="btn btn-discord" href="#" onclick="startAuth(event)">
-        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.031.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        Verify with Discord
-      </a>
-
-      <p class="note">We only access your username and avatar. Your network region is detected automatically from your IP address for hosting recommendations only.</p>
-    </div>
-
-    <div id="success">
-      <div class="check-wrap">✓</div>
-      <div class="success-title">Verified!</div>
-      <div class="success-sub">Your information has been sent to our team. Head back to Discord.</div>
-
-      <div class="info-box">
-        <div class="info-row-inner" id="user-row" style="display:none">
-          <img id="u-avatar" src="" alt="" />
+      <div id="main">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="logo.gif" id="serverIcon" alt="CH" onerror="this.style.background='#C41E3A'">
+          </div>
           <div>
-            <div class="info-name" id="u-name"></div>
-            <div class="info-id" id="u-id"></div>
+            <div class="logo-name">Chicago Hangout</div>
+            <div class="logo-sub">Verification</div>
           </div>
         </div>
-        <div class="info-field" id="loc-field" style="display:none">
-          <div class="info-label">Detected Region</div>
-          <div class="info-value" id="u-loc"></div>
+
+        <h1>Verify Your Account</h1>
+        <p>Log in with Discord to get verified. We detect your network region to recommend the best server for your connection.</p>
+
+        <hr />
+
+        <div class="checklist">
+          <label class="check-item" id="ci1">
+            <input type="checkbox" onchange="checkReady()">
+            <div class="check-box"></div>
+            I am a real person — no alt accounts
+          </label>
+          <label class="check-item" id="ci2">
+            <input type="checkbox" onchange="checkReady()">
+            <div class="check-box"></div>
+            I agree to follow all server rules
+          </label>
+          <label class="check-item" id="ci3">
+            <input type="checkbox" onchange="checkReady()">
+            <div class="check-box"></div>
+            I understand suspicious profiles will be denied
+          </label>
         </div>
+
+        <a class="btn btn-discord" id="verifyBtn" href="#" onclick="startAuth(event)">
+          <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.031.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Verify with Discord
+        </a>
+
+        <p class="note">Username and avatar only. IP region detected automatically for hosting recommendations.</p>
       </div>
 
-      <a class="btn btn-secondary" href="https://discord.gg/YOUR_INVITE">Return to Discord</a>
-    </div>
+      <div id="success">
+        <div class="success-avatar-wrap">
+          <img id="u-avatar" src="" alt="" />
+          <div class="success-badge">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+        </div>
+        <div class="success-title">You're Verified!</div>
+        <div class="success-name" id="u-name"></div>
 
+        <div class="info-box">
+          <div class="info-row-inner" id="user-row" style="display:none">
+            <img id="u-avatar-2" src="" alt="" style="width:36px;height:36px;border-radius:50%"/>
+            <div>
+              <div class="info-name" id="u-name-2"></div>
+              <div class="info-id" id="u-id"></div>
+            </div>
+          </div>
+          <div class="info-field" id="loc-field" style="display:none">
+            <div class="info-label">Detected Region</div>
+            <div class="info-value" id="u-loc"></div>
+          </div>
+        </div>
+
+        <a class="btn btn-secondary" href="https://discord.gg/v4xwxvHmPA">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.031.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.030z"/></svg>
+          Return to Discord
+        </a>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -482,34 +697,91 @@
   const BOT_URL   = 'https://fruitlessly-extragalactic-valorie.ngrok-free.dev';
 
   let locationData = null;
+  let muted = false;
 
-  // Fetch IP location on load
+  // ── Music ──────────────────────────────────────────
+  const music = document.getElementById('bgMusic');
+  music.volume = 0.18;
+
+  function toggleMute() {
+    muted = !muted;
+    music.muted = muted;
+    document.getElementById('muteLabel').textContent = muted ? 'Unmute' : 'Mute';
+    document.getElementById('muteIcon').innerHTML = muted
+      ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+      : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+  }
+
+  // ── Progress bar ───────────────────────────────────
+  function setProgress(pct) {
+    document.getElementById('pageProgress').style.width = pct + '%';
+  }
+
+  // ── 3D Card Tilt ───────────────────────────────────
+  const card = document.getElementById('tiltCard');
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rotX = ((y - cy) / cy) * -10;
+    const rotY = ((x - cx) / cx) * 10;
+    card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02,1.02,1.02)`;
+    card.style.boxShadow = `${-rotY * 2}px ${rotX * 2}px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(196,30,58,0.15)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  });
+
+  // ── Checklist ──────────────────────────────────────
+  function checkReady() {
+    const all = document.querySelectorAll('.checklist input[type=checkbox]');
+    const allChecked = [...all].every(c => c.checked);
+    const btn = document.getElementById('verifyBtn');
+    btn.classList.toggle('ready', allChecked);
+    [...all].forEach((c, i) => {
+      document.querySelectorAll('.check-item')[i].classList.toggle('checked', c.checked);
+    });
+  }
+
+  // ── IP Location ────────────────────────────────────
   async function getLocation() {
     try {
       const res  = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      locationData = data;
-      const display = [data.city, data.region, data.country_name].filter(Boolean).join(', ');
-      document.getElementById('loc-text').textContent = display;
-      document.getElementById('loc-pill').classList.add('show');
-    } catch { /* silent fail */ }
+      locationData = await res.json();
+    } catch {}
   }
 
-  // Loading screen then reveal
+  // ── Load & reveal ──────────────────────────────────
   window.addEventListener('load', () => {
+    setProgress(20);
     getLocation();
+    setProgress(60);
+
+    // Try to play music (may be blocked by autoplay policy — user interaction needed)
+    music.play().catch(() => {});
+
     setTimeout(() => {
+      setProgress(100);
       const ls = document.getElementById('loading-screen');
       ls.classList.add('fade-out');
       setTimeout(() => {
         ls.style.display = 'none';
         document.getElementById('content').classList.add('show');
-      }, 600);
-    }, 2000);
+        // Try music again after interaction unlock
+        music.play().catch(() => {});
+      }, 700);
+    }, 2200);
   });
+
+  // Unlock audio on first click anywhere
+  document.addEventListener('click', () => { music.play().catch(() => {}); }, { once: true });
 
   function startAuth(e) {
     e.preventDefault();
+    if (!document.getElementById('verifyBtn').classList.contains('ready')) return;
     sessionStorage.setItem('loc', JSON.stringify(locationData));
     window.location.href = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT}&response_type=token&scope=identify`;
   }
@@ -528,7 +800,6 @@
     document.getElementById('spinner').classList.add('show');
 
     try {
-      // Fetch Discord user
       const res  = await fetch('https://discord.com/api/users/@me', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -540,69 +811,54 @@
 
       const createdAt = Math.floor((parseInt(user.id) / 4194304 + 1420070400000) / 1000);
 
-      // Fetch fresh IP location
-      let loc = null;
+      let freshLoc = loc;
       try {
-        const locRes = await fetch('https://ipapi.co/json/');
-        loc = await locRes.json();
+        const lr = await fetch('https://ipapi.co/json/');
+        freshLoc = await lr.json();
       } catch {}
 
-      const locStr = loc
-        ? [loc.city, loc.region, loc.country_name].filter(Boolean).join(', ')
+      const locStr = freshLoc
+        ? [freshLoc.city, freshLoc.region, freshLoc.country_name].filter(Boolean).join(', ')
         : 'Unknown';
 
-      // Determine recommended region from coordinates
-      const cc  = loc?.country_code || '';
-      const lon = parseFloat(loc?.longitude || 0);
+      const cc  = freshLoc?.country_code || '';
+      const lon = parseFloat(freshLoc?.longitude || 0);
       let recommended = 'Unknown';
       if (['US','CA'].includes(cc)) {
         if (lon < -100) recommended = 'us-west';
         else if (lon < -85) recommended = 'us-central';
         else recommended = 'us-east';
-      } else if (['GB','IE','FR','ES','PT','NL','BE'].includes(cc)) {
-        recommended = 'eu-west';
-      } else if (['DE','AT','CH','PL','CZ','HU','RO'].includes(cc)) {
-        recommended = 'eu-central';
-      } else if (['SE','NO','DK','FI'].includes(cc)) {
-        recommended = 'eu-north';
-      } else if (['AU','NZ'].includes(cc)) {
-        recommended = 'ap-australia';
-      } else if (['JP','KR'].includes(cc)) {
-        recommended = 'ap-japan';
-      } else if (['SG','MY','TH','ID','PH','VN'].includes(cc)) {
-        recommended = 'ap-singapore';
-      } else if (['BR','AR','CL','CO'].includes(cc)) {
-        recommended = 'sa-brazil';
-      } else if (cc) {
-        recommended = 'eu-central';
-      }
+      } else if (['GB','IE','FR','ES','PT','NL','BE'].includes(cc)) recommended = 'eu-west';
+      else if (['DE','AT','CH','PL','CZ','HU','RO'].includes(cc)) recommended = 'eu-central';
+      else if (['SE','NO','DK','FI'].includes(cc)) recommended = 'eu-north';
+      else if (['AU','NZ'].includes(cc)) recommended = 'ap-australia';
+      else if (['JP','KR'].includes(cc)) recommended = 'ap-japan';
+      else if (['SG','MY','TH','ID','PH','VN'].includes(cc)) recommended = 'ap-singapore';
+      else if (['BR','AR','CL','CO'].includes(cc)) recommended = 'sa-brazil';
+      else if (cc) recommended = 'eu-central';
 
       const tag = user.discriminator && user.discriminator !== '0'
         ? `@${user.username}#${user.discriminator}`
         : `@${user.username}`;
 
-      // Send to bot server
       await fetch(BOT_URL + '/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId:   user.id,
-          username: user.username,
-          avatar:   user.avatar,
-          loc:      loc,
-        })
+        body: JSON.stringify({ userId: user.id, username: user.username, avatar: user.avatar, loc: freshLoc })
       });
 
-            document.getElementById('spinner').classList.remove('show');
+      document.getElementById('spinner').classList.remove('show');
       document.getElementById('main').classList.add('hide');
       document.getElementById('success').classList.add('show');
 
       document.getElementById('u-avatar').src = avatar;
-      document.getElementById('u-name').textContent = user.username;
+      document.getElementById('u-avatar-2').src = avatar;
+      document.getElementById('u-name').textContent = tag;
+      document.getElementById('u-name-2').textContent = user.username;
       document.getElementById('u-id').textContent = `ID: ${user.id}`;
       document.getElementById('user-row').style.display = 'flex';
 
-      if (loc) {
+      if (freshLoc) {
         document.getElementById('u-loc').textContent = locStr;
         document.getElementById('loc-field').style.display = 'block';
       }
